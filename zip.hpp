@@ -538,6 +538,19 @@ public:
         handle_ = { archive, zip_close };
     }
 
+    archive(zip_source_t* source, flags_t flags = 0)
+        : handle_(nullptr, nullptr)
+    {
+        zip_error_t error;
+        zip_t* archive = zip_open_from_source(source, flags, &error);
+
+        if (archive == nullptr) {
+            throw std::runtime_error{zip_error_strerror(&error)};
+        }
+
+        handle_ = { archive, zip_close };
+    }
+
     /**
      * Move constructor defaulted.
      *
@@ -993,6 +1006,18 @@ public:
             new zip_progress_callback{std::move(callback)});
     }
 };
+
+inline zip_source_t* zip_source_from_buffer(const void* data, uint64_t len, int freep = 0)
+{
+    zip_error_t error;
+    auto zip_source = zip_source_buffer_create(data, len, freep, &error);
+
+    if (zip_source == nullptr) {
+        throw std::runtime_error{zip_error_strerror(&error)};
+    }
+
+    return zip_source;
+}
 
 } // !libzip
 
