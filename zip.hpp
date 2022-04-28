@@ -165,7 +165,7 @@ public:
      * \param length the length
      * \return the number of bytes written or -1 on failure
      */
-    inline int read(void* data, uint64_t length) noexcept
+    inline int64_t read(void* data, uint64_t length) noexcept
     {
         return zip_fread(handle_.get(), data, length);
     }
@@ -177,7 +177,7 @@ public:
      * \return the number of bytes written or -1 on failure
      */
     template <size_t Size>
-    inline int read(char (&data)[Size]) noexcept
+    inline int64_t read(char (&data)[Size]) noexcept
     {
         return read(data, Size);
     }
